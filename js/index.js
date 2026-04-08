@@ -5,10 +5,9 @@ let retryCount = 0;
 let maxRetries = 5;
 let jailbreakRunning = false;
 
-// ✅ نخزن الموديولات مرة واحدة فقط
 let JailbreakModule = null;
 
-// ✅ نجاح الجيلبريك
+// ✅ نجاح
 function onJailbreakSuccess() {
 
   if (sessionStorage.getItem('jbsuccess')) return;
@@ -32,17 +31,13 @@ function onJailbreakSuccess() {
   clearInterval(retryInterval);
 }
 
-// 🚀 تحميل الموديولات مرة واحدة
+// 🚀 تحميل مرة واحدة (بدون alert.mjs)
 async function loadExploit() {
   try {
-    const modules = await Promise.all([
-      import('../payloads/Jailbreak.js'),
-      import('../psfree/alert.mjs')
-    ]);
+    const module = await import('../payloads/Jailbreak.js');
+    JailbreakModule = module;
 
-    JailbreakModule = modules[0];
-
-    consoleDev.append(`📦 Exploit Loaded\n`);
+    consoleDev.append(`📦 Exploit Ready\n`);
     consoleDev.scrollTop = consoleDev.scrollHeight;
 
   } catch (e) {
@@ -50,7 +45,7 @@ async function loadExploit() {
   }
 }
 
-// 🚀 تشغيل الجيلبريك
+// ▶️ تشغيل
 function runExploit() {
 
   if (!JailbreakModule) {
@@ -68,7 +63,7 @@ function runExploit() {
   }
 }
 
-// 🔁 الجيلبريك مع التحكم
+// 🔁 الجيلبريك
 function jailbreak() {
 
   if (sessionStorage.getItem('jbsuccess')) return;
@@ -93,7 +88,7 @@ function jailbreak() {
   }, 8000);
 }
 
-// 🔁 Auto Jailbreak
+// 🔁 Auto
 function startAutoJailbreak() {
 
   consoleDev.append(`🚀 Auto jailbreak started...\n`);
@@ -118,13 +113,13 @@ function startAutoJailbreak() {
   }, 10000);
 }
 
-// 🖱️ زر يدوي
+// زر
 document.getElementById('jailbreak').addEventListener('click', jailbreak);
 
-// ⚙️ تشغيل الصفحة
+// تشغيل
 window.addEventListener('load', async function () {
 
-  await loadExploit(); // 🔥 مهم جدًا
+  await loadExploit(); // 🔥 مهم
 
   startAutoJailbreak();
 
