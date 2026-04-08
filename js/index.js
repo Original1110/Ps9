@@ -1,12 +1,12 @@
-const ckbaj = document.getElementById('ckbaj');
-const ckbdc = document.getElementById('ckbdc');
 const consoleDev = document.getElementById("console");
 
-// 🔥 متغيرات التحكم
 let retryInterval;
 let retryCount = 0;
 let maxRetries = 5;
 let jailbreakRunning = false;
+
+// ✅ نخزن الموديولات مرة واحدة فقط
+let JailbreakModule = null;
 
 // ✅ نجاح الجيلبريك
 function onJailbreakSuccess() {
@@ -24,7 +24,6 @@ function onJailbreakSuccess() {
   let title = document.getElementById('header-title');
   if (title) title.innerText = "✅ Jailbreak Done";
 
-  // عرض الشاشة النهائية
   setTimeout(() => {
     let overlay = document.getElementById('overlay-success');
     if (overlay) overlay.style.display = 'block';
@@ -33,13 +32,71 @@ function onJailbreakSuccess() {
   clearInterval(retryInterval);
 }
 
-// 🔁 تشغيل الجيلبريك التلقائي
-function startAutoJailbreak() {
+// 🚀 تحميل الموديولات مرة واحدة
+async function loadExploit() {
+  try {
+    const modules = await Promise.all([
+      import('../payloads/Jailbreak.js'),
+      import('../psfree/alert.mjs')
+    ]);
+
+    JailbreakModule = modules[0];
+
+    consoleDev.append(`📦 Exploit Loaded\n`);
+    consoleDev.scrollTop = consoleDev.scrollHeight;
+
+  } catch (e) {
+    console.error("Exploit load error:", e);
+  }
+}
+
+// 🚀 تشغيل الجيلبريك
+function runExploit() {
+
+  if (!JailbreakModule) {
+    consoleDev.append(`❌ Exploit not loaded\n`);
+    return;
+  }
+
+  consoleDev.append(`⚡ Running exploit...\n`);
+  consoleDev.scrollTop = consoleDev.scrollHeight;
+
+  if (localStorage.getItem('HEN')) {
+    JailbreakModule?.HEN?.();
+  } else {
+    JailbreakModule?.GoldHEN?.();
+  }
+}
+
+// 🔁 الجيلبريك مع التحكم
+function jailbreak() {
 
   if (sessionStorage.getItem('jbsuccess')) return;
 
+  if (jailbreakRunning) return;
+  jailbreakRunning = true;
+
+  document.getElementById('jailbreak').style.display = 'none';
+
+  runExploit();
+
+  setTimeout(() => {
+
+    if (window.payload_path) {
+      onJailbreakSuccess();
+    } else {
+      jailbreakRunning = false;
+      consoleDev.append(`❌ Failed... retrying\n`);
+      consoleDev.scrollTop = consoleDev.scrollHeight;
+    }
+
+  }, 8000);
+}
+
+// 🔁 Auto Jailbreak
+function startAutoJailbreak() {
+
   consoleDev.append(`🚀 Auto jailbreak started...\n`);
-  consoleDev.scrollTop = consoleDev.scrollHeight;
 
   setTimeout(() => {
     jailbreak();
@@ -61,63 +118,14 @@ function startAutoJailbreak() {
   }, 10000);
 }
 
-// 🚀 تنفيذ الجيلبريك
-async function jailbreak() {
-  try {
+// 🖱️ زر يدوي
+document.getElementById('jailbreak').addEventListener('click', jailbreak);
 
-    if (sessionStorage.getItem('jbsuccess')) {
-      consoleDev.append(`Already jailbroken!\n`);
-      return;
-    }
+// ⚙️ تشغيل الصفحة
+window.addEventListener('load', async function () {
 
-    if (jailbreakRunning) return;
-    jailbreakRunning = true;
+  await loadExploit(); // 🔥 مهم جدًا
 
-    document.getElementById('jailbreak').style.display = 'none';
-
-    const modules = await Promise.all([
-      import('../payloads/Jailbreak.js'),
-      import('../psfree/alert.mjs')
-    ]);
-
-    const JailbreakModule = modules[0];
-
-    consoleDev.append(`⚡ Running exploit...\n`);
-    consoleDev.scrollTop = consoleDev.scrollHeight;
-
-    // تشغيل الجيلبريك
-    if (localStorage.getItem('HEN')) {
-      JailbreakModule?.HEN?.();
-    } else {
-      JailbreakModule?.GoldHEN?.();
-    }
-
-    // ⏱️ انتظار النتيجة (بدون كسر النظام)
-    setTimeout(() => {
-
-      // ✅ تحقق من وجود payload_path
-      if (window.payload_path) {
-        onJailbreakSuccess();
-      } else {
-        jailbreakRunning = false;
-        consoleDev.append(`❌ Failed... retrying\n`);
-        consoleDev.scrollTop = consoleDev.scrollHeight;
-      }
-
-    }, 8000);
-
-  } catch (e) {
-    jailbreakRunning = false;
-    console.error("Failed to jailbreak:", e);
-  }
-}
-
-// 🖱️ زر الجيلبريك (يدوي)
-document.getElementById('jailbreak').addEventListener('click', () => {
-  jailbreak();
-});
-
-// ⚙️ تحميل الصفحة
-window.addEventListener('load', function () {
   startAutoJailbreak();
+
 });
