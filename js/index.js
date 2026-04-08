@@ -32,12 +32,21 @@ function onJailbreakSuccess() {
 }
 
 // 🚀 تحميل مرة واحدة (بدون alert.mjs)
+let exploitLoaded = false;
+
 async function loadExploit() {
   try {
+
+    if (exploitLoaded) return;
+
+    await import('../psfree/alert.mjs'); // ✅ رجعناه
     const module = await import('../payloads/Jailbreak.js');
+
     JailbreakModule = module;
 
-    consoleDev.append(`📦 Exploit Ready\n`);
+    exploitLoaded = true;
+
+    consoleDev.append(`📦 Exploit Loaded\n`);
     consoleDev.scrollTop = consoleDev.scrollHeight;
 
   } catch (e) {
