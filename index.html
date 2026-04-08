@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html manifest="./PSFree.manifest">
+<head>
+<meta charset="UTF-8">
+<title>PSFree</title>
+
+<style>
+.floating-menu {
+  display: none !important;
+}
+
+#success-msg {
+  display: none;
+  text-align: center;
+  color: #00ff88;
+  font-size: 22px;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+#overlay-success {
+  display: none;
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:black;
+  color:white;
+  text-align:center;
+  z-index:9999;
+}
+
+#overlay-success h1 {
+  margin-top:40%;
+}
+</style>
+
+<link rel='stylesheet' href='./css/index.css'>
+</head>
+
+<body>
+
+<div class="header">
+  <div class="header-title" id="header-title">PSFree</div>
+</div>
+
+<h2 style="text-align:center;">PS4 Auto Jailbreak</h2>
+
+<div class="center-btn-wrap">
+  <button id="jailbreak" class="ps-btn">JAILBREAK</button>
+</div>
+
+<div id="success-msg">
+  ✅ تم تفعيل الجيلبريك بنجاح
+</div>
+
+<div id="overlay-success">
+  <h1>✅ Jailbreak Loaded<br>اضغط زر PS للخروج</h1>
+</div>
+
+<div id="DebugConsole" style="display:flex;">
+  <pre id="console"></pre>
+</div>
+
+<script src='./js/index.js'></script>
+
+</body>
+</html>
