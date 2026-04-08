@@ -2,6 +2,7 @@ const ckbaj = document.getElementById('ckbaj');
 const ckbdc = document.getElementById('ckbdc');
 const consoleDev = document.getElementById("console");
 
+// 🔥 متغيرات التحكم
 let retryInterval;
 let retryCount = 0;
 let maxRetries = 5;
@@ -23,19 +24,22 @@ function onJailbreakSuccess() {
   let title = document.getElementById('header-title');
   if (title) title.innerText = "✅ Jailbreak Done";
 
+  // عرض الشاشة النهائية
   setTimeout(() => {
-    document.getElementById('overlay-success').style.display = 'block';
+    let overlay = document.getElementById('overlay-success');
+    if (overlay) overlay.style.display = 'block';
   }, 3000);
 
   clearInterval(retryInterval);
 }
 
-// 🔁 Auto Jailbreak
+// 🔁 تشغيل الجيلبريك التلقائي
 function startAutoJailbreak() {
 
   if (sessionStorage.getItem('jbsuccess')) return;
 
   consoleDev.append(`🚀 Auto jailbreak started...\n`);
+  consoleDev.scrollTop = consoleDev.scrollHeight;
 
   setTimeout(() => {
     jailbreak();
@@ -57,7 +61,7 @@ function startAutoJailbreak() {
   }, 10000);
 }
 
-// 🚀 الجيلبريك
+// 🚀 تنفيذ الجيلبريك
 async function jailbreak() {
   try {
 
@@ -81,15 +85,18 @@ async function jailbreak() {
     consoleDev.append(`⚡ Running exploit...\n`);
     consoleDev.scrollTop = consoleDev.scrollHeight;
 
+    // تشغيل الجيلبريك
     if (localStorage.getItem('HEN')) {
       JailbreakModule?.HEN?.();
     } else {
       JailbreakModule?.GoldHEN?.();
     }
 
+    // ⏱️ انتظار النتيجة (بدون كسر النظام)
     setTimeout(() => {
 
-      if (sessionStorage.getItem('jbsuccess')) {
+      // ✅ تحقق من وجود payload_path
+      if (window.payload_path) {
         onJailbreakSuccess();
       } else {
         jailbreakRunning = false;
@@ -104,6 +111,11 @@ async function jailbreak() {
     console.error("Failed to jailbreak:", e);
   }
 }
+
+// 🖱️ زر الجيلبريك (يدوي)
+document.getElementById('jailbreak').addEventListener('click', () => {
+  jailbreak();
+});
 
 // ⚙️ تحميل الصفحة
 window.addEventListener('load', function () {
